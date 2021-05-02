@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+import "svg.proto";
+import "transport_router.proto";
+
+package serialization_data;
+
+message  Coordinate {
+  double lat = 1;
+  double lng = 2;
+}
+
+message Distance {
+  uint32 from = 1;
+  uint32 to = 2;
+  int32 length = 3;
+}
+
+message Stop {
+  string name = 1;
+  Coordinate coordinate = 2;
+}
+
+message Bus {
+  bool is_round = 1;
+  int32 stops_count = 2;
+  int32 unique_count = 3;
+  int32 real_distance = 4;
+  double length = 5;
+  string number = 6;
+  Coordinate last_stop = 7;
+  repeated uint32 stops = 8;
+}
+
+
+
+message TransportCatalogue {
+  repeated Stop stops = 1;
+  repeated Bus buses = 2;
+  repeated Distance distance = 3;
+  Map map = 4;
+  Router transport_router = 5;
+}

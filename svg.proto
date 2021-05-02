@@ -1,0 +1,105 @@
+syntax = "proto3";
+
+package serialization_data;
+
+
+enum StrokeLineCap {
+  BUTT = 0;
+  ROUND = 1;
+  SQUARE = 2;
+};
+
+enum StrokeLineJoin {
+  ARCS = 0;
+  BEVEL = 1;
+  MITER = 2;
+  MITER_CLIP = 3;
+  ROUND2 = 4;
+};
+
+message RGB {
+  uint32 red = 1;
+  uint32 green = 2;
+  uint32 blue = 3;
+}
+
+message RGBA {
+  uint32 red = 1;
+  uint32 green = 2;
+  uint32 blue = 3;
+  double opacity = 4;
+}
+
+message Color {
+  string color = 1;
+  RGB rgb = 2;
+  RGBA rgba = 3;
+  bool has_color_ = 4;
+  bool has_rgb_ = 5;
+  bool has_rgba_ = 6;
+}
+
+message Point {
+  double x = 1;
+  double y = 2;
+}
+
+message Attribute {
+  Color fill_color = 2;
+  Color stroke_color = 3;
+  double stroke_with = 4;
+  StrokeLineCap stroke_linecap = 5;
+  StrokeLineJoin stroke_linejoin = 6;
+  bool has_fill_color_ = 7;
+  bool has_stroke_color_ = 8;
+  bool has_stroke_with_ = 9;
+  bool has_stroke_linecap_ = 10;
+  bool has_stroke_linejoin_ = 11;
+}
+
+message Polyline {
+  repeated Point points = 1;
+  Attribute attribute = 2;
+}
+
+message Circle {
+  Point center = 1;
+  double radius = 2;
+  Attribute attribute = 3;
+}
+
+message Text {
+  Point position = 1;
+  Point offset = 2;
+  uint32 font_size = 3;
+  string font_family = 4;
+  string font_weight = 5;
+  string data = 6;
+  Attribute attribute = 7;
+  bool has_font_family_ = 8;
+  bool has_font_weight_ = 9;
+}
+
+message Map {
+  uint32  bus_label_font_size = 1;
+  uint32 stop_label_font_size = 2;
+  double width = 3;
+  double height = 4;
+  double padding = 5;
+  double line_width = 6;
+  double stop_radius = 7;
+  double underlayer_width = 8;
+  double min_lat = 9;
+  double min_lon = 10;
+  double max_lat = 11;
+  double max_lon = 12;
+  double zoom_coef = 13;
+  Point bus_label_offset_ = 14;
+  Point stop_label_offset_ = 15;
+  Color underlayer_color = 16;
+  repeated Color color_palette = 17;
+  repeated Polyline polyline = 18;
+  repeated Text text_polyline = 19;
+  repeated Circle circle = 20;
+  repeated Text text_circle = 21;
+}

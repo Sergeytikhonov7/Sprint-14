@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package serialization_data;
+
+message Edge {
+  int32 from = 1;
+  int32 to = 2;
+  double weight = 3;
+}
+
+message IncidentList {
+  repeated int32 edgeID = 1;
+}
+
+message IncidentLists {
+  repeated IncidentList incident_lists = 1;
+}
+
+message Edges {
+  repeated Edge edge_list = 1;
+}
+
+message Graph {
+  Edges edges = 1;
+  IncidentLists lists = 2;
+}
