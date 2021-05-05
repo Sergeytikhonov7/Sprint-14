@@ -206,14 +206,14 @@ void RouteSerialization(serialization_data::TransportCatalogue& data,
     for (const auto& route: requestHandler.GetBusNumbers()) {
         auto current_route = data.add_buses();
         current_route->set_is_round(route.is_roundtrip);
-        current_route->set_number(route.number);
+        current_route->set_number(route.number_);
         current_route->set_stops_count(route.stops_count);
-        current_route->set_unique_count(route.unique_stops_count);
-        current_route->set_real_distance(route.real_distance);
-        current_route->set_length(route.length);
-        current_route->mutable_last_stop()->set_lat(route.last_stop.lat);
-        current_route->mutable_last_stop()->set_lat(route.last_stop.lng);
-        for (const auto& stop: route.stops) {
+        current_route->set_unique_count(route.unique_stops_count_);
+        current_route->set_real_distance(route.real_distance_);
+        current_route->set_length(route.length_);
+        current_route->mutable_last_stop()->set_lat(route.last_stop_.lat);
+        current_route->mutable_last_stop()->set_lat(route.last_stop_.lng);
+        for (const auto& stop: route.stops_) {
             current_route->add_stops(requestHandler.GetIndexStop(stop->name_));
         }
     }
@@ -251,7 +251,7 @@ void ActivityDeserialization(const RequestHandler& requestHandler, router::Trans
     for (const auto& activity: data.transport_router().activity()) {
         router::BusActivity current_activity;
         current_activity.type = "Bus";
-        current_activity.name = requestHandler.GetBusName(activity.number()).number;
+        current_activity.name = requestHandler.GetBusName(activity.number()).number_;
         current_activity.from = requestHandler.GetStopName(activity.from())->name_;
         current_activity.time = activity.time();
         current_activity.span_count = activity.span_count();
@@ -394,14 +394,14 @@ void RouteDeserialization(RequestHandler& requestHandler, const serialization_da
     domain::Bus current_route;
     current_route.is_roundtrip = route.is_round();
     current_route.stops_count = route.stops_count();
-    current_route.unique_stops_count = route.unique_count();
-    current_route.real_distance = route.real_distance();
-    current_route.length = route.length();
-    current_route.number = route.number();
-    current_route.last_stop.lat = route.last_stop().lat();
-    current_route.last_stop.lng = route.last_stop().lng();
+    current_route.unique_stops_count_ = route.unique_count();
+    current_route.real_distance_ = route.real_distance();
+    current_route.length_ = route.length();
+    current_route.number_ = route.number();
+    current_route.last_stop_.lat = route.last_stop().lat();
+    current_route.last_stop_.lng = route.last_stop().lng();
     for (const auto& stop: route.stops()) {
-        current_route.stops.push_back(requestHandler.GetStopName(stop));
+        current_route.stops_.push_back(requestHandler.GetStopName(stop));
     }
     requestHandler.AddRouteToDatabaseFromSerializeData(current_route);
 }

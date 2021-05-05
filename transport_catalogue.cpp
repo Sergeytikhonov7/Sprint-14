@@ -15,8 +15,8 @@ namespace database {
 
     void transport_catalogue::AddRoute(domain::Bus& busRoute) {
         auto route = &buses_number_.emplace_back(std::move(busRoute));
-        index_bus_[route->number] = buses_number_.size() - 1;
-        routes_[route->number] = route;
+        index_bus_[route->number_] = buses_number_.size() - 1;
+        routes_[route->number_] = route;
     }
 
     BusInfo transport_catalogue::FindRouteByName(std::string_view number) const {
@@ -34,8 +34,8 @@ namespace database {
     }
 
     void transport_catalogue::AddBusesToStop(const domain::Bus& busRoute) {
-        for (const auto& stop : busRoute.stops) {
-            buses_[stop->name_].insert(busRoute.number);
+        for (const auto& stop : busRoute.stops_) {
+            buses_[stop->name_].insert(busRoute.number_);
         }
     }
 

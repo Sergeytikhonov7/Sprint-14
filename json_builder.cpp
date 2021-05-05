@@ -7,7 +7,7 @@ namespace json {
         if (json_structure_.empty() && nodes_stack_.size() == 1) { // json документ готов
             throw std::logic_error("Method Key call when document is finished");
         }
-        if (is_key) { // второй вызов Key
+        if (is_key_) { // второй вызов Key
             throw std::logic_error("Second method Key call");
         }
         if (!json_structure_.empty() && json_structure_.back()->IsArray()) { // вызов снаружи словаря
@@ -18,48 +18,40 @@ namespace json {
         }
         const Node node(std::move(key));
         nodes_stack_.emplace_back(std::make_shared<Node>(node));
-        is_key = true;
+        is_key_ = true;
         return keyItemContext;
     }
 
     Builder& Builder::Value(Node::Value value) {
         if (json_structure_.empty() && nodes_stack_.size() == 1) { // json документ готов
             throw std::logic_error("Method Value call when document is finished");
-        }
-        if (!is_key && !json_structure_.empty() &&
+        } else if (!is_key_ && !json_structure_.empty() &&
             (!json_structure_.empty() && json_structure_.back()->IsDict())) {
             throw std::logic_error(
                     "Calling Value not after a constructor, not after Key, not after a previous array element");
-        }
-        if (std::holds_alternative<std::nullptr_t>(value)) {
+        } else  if (std::holds_alternative<std::nullptr_t>(value)) {
             const Node node(std::get<std::nullptr_t>(std::move(value)));
             root_ = *nodes_stack_.emplace_back(std::make_shared<Node>(node));
-        }
-        if (std::holds_alternative<Array>(value)) {
+        } else if (std::holds_alternative<Array>(value)) {
             const Node node(std::get<Array>(std::move(value)));
             root_ = *nodes_stack_.emplace_back(std::make_shared<Node>(node));
-        }
-        if (std::holds_alternative<Dict>(value)) {
+        } else if (std::holds_alternative<Dict>(value)) {
             const Node node(std::get<Dict>(std::move(value)));
             root_ = *nodes_stack_.emplace_back(std::make_shared<Node>(node));
-        }
-        if (std::holds_alternative<bool>(value)) {
+        } else if (std::holds_alternative<bool>(value)) {
             const Node node(std::get<bool>(std::move(value)));
             root_ = *nodes_stack_.emplace_back(std::make_shared<Node>(node));
-        }
-        if (std::holds_alternative<int>(value)) {
+        } else if (std::holds_alternative<int>(value)) {
             const Node node(std::get<int>(std::move(value)));
             root_ = *nodes_stack_.emplace_back(std::make_shared<Node>(node));
-        }
-        if (std::holds_alternative<double>(value)) {
+        } else if (std::holds_alternative<double>(value)) {
             const Node node(std::get<double>(std::move(value)));
             root_ = *nodes_stack_.emplace_back(std::make_shared<Node>(node));
-        }
-        if (std::holds_alternative<std::string>(value)) {
+        } else if (std::holds_alternative<std::string>(value)) {
             const Node node(std::get<std::string>(std::move(value)));
             root_ = *nodes_stack_.emplace_back(std::make_shared<Node>(node));
         }
-        is_key = false;
+        is_key_ = false;
         return *this;
     }
 
@@ -68,14 +60,14 @@ namespace json {
         if (json_structure_.empty() && nodes_stack_.size() == 1) { // json документ готов
             throw std::logic_error("Method StarDict call when document is finished");
         }
-        if (!is_key && !json_structure_.empty() &&
+        if (!is_key_ && !json_structure_.empty() &&
             (!json_structure_.empty() && json_structure_.back()->IsDict())) {
             throw std::logic_error(
                     "Calling StartDict not after a constructor, not after Key, not after a previous array element");
         }
         auto node = nodes_stack_.emplace_back(std::make_shared<Node>(Node(Dict())));
         json_structure_.push_back(node);
-        is_key = false;
+        is_key_ = false;
         return dictItemContext;
     }
 
@@ -84,7 +76,7 @@ namespace json {
         if (json_structure_.empty() && nodes_stack_.size() == 1) { // json документ готов
             throw std::logic_error("Method StartArray call when document is finished");
         }
-        if (!is_key && !json_structure_.empty() &&
+        if (!is_key_ && !json_structure_.empty() &&
             (!json_structure_.empty() && json_structure_.back()->IsDict())) {
             throw std::logic_error(
                     "Calling StartArray not after a constructor, not after Key, not after a previous array element");
@@ -92,7 +84,7 @@ namespace json {
 
         auto node = nodes_stack_.emplace_back(std::make_shared<Node>(Node(Array())));
         json_structure_.push_back(node);
-        is_key = false;
+        is_key_ = false;
         return arrayItemContext;
     }
 
@@ -121,7 +113,7 @@ namespace json {
         nodes_stack_.erase(iterator_for_erase, nodes_stack_.end());
         json_structure_.pop_back();
         root_ = *nodes_stack_.emplace_back(std::make_shared<Node>(std::move(currentDict)));
-        is_key = false;
+        is_key_ = false;
         return *this;
     }
 
@@ -146,7 +138,7 @@ namespace json {
         nodes_stack_.erase(iterator_for_erase, nodes_stack_.end());
         json_structure_.pop_back();
         root_ = *nodes_stack_.emplace_back(std::make_shared<Node>(std::move(currentArray)));
-        is_key = false;
+        is_key_ = false;
         return *this;
     }
 

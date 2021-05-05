@@ -16,12 +16,12 @@ void RequestHandler::AddDistanceBetweenStopsToDatabase(std::string_view from, st
 void RequestHandler::AddRouteToDatabase(domain::Bus& bus) {
     if (bus.stops_count > 0) {
         for (size_t idx = 0; idx < bus.stops_count - 1; ++idx) {
-            bus.length += geo::ComputeDistance(bus.stops[idx]->coordinates_, bus.stops[idx + 1]->coordinates_);
-            bus.real_distance += GetDistance(bus.stops[idx]->name_, bus.stops[idx + 1]->name_);
+            bus.length_ += geo::ComputeDistance(bus.stops_[idx]->coordinates_, bus.stops_[idx + 1]->coordinates_);
+            bus.real_distance_ += GetDistance(bus.stops_[idx]->name_, bus.stops_[idx + 1]->name_);
         }
     }
     if (bus.stops_count > 0) {
-        data_for_map_.insert(bus.number);
+        data_for_map_.insert(bus.number_);
     }
     db_.AddBusesToStop(bus);
     db_.AddRoute(bus);
@@ -29,7 +29,7 @@ void RequestHandler::AddRouteToDatabase(domain::Bus& bus) {
 
 void RequestHandler::AddRouteToDatabaseFromSerializeData(domain::Bus& bus) {
     if (bus.stops_count > 0) {
-        data_for_map_.insert(bus.number);
+        data_for_map_.insert(bus.number_);
     }
     db_.AddBusesToStop(bus);
     db_.AddRoute(bus);
@@ -61,7 +61,7 @@ void RequestHandler::BuildMap() {
         if (!bus || bus->stops_count == 0) {
             continue;
         }
-        uniq_stops.insert(bus->stops.begin(), bus->stops.end());
+        uniq_stops.insert(bus->stops_.begin(), bus->stops_.end());
         renderer_.AddRouteToMap(bus);
     }
     renderer_.AddStopToMap(uniq_stops);

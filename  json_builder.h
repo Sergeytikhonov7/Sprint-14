@@ -39,7 +39,7 @@ namespace json {
         json::Node root_;
         std::vector<std::shared_ptr<Node>> nodes_stack_;
         std::vector<std::shared_ptr<Node>> json_structure_;
-        bool is_key = false;
+        bool is_key_ = false;
     };
 
     class DictItemContext {

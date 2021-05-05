@@ -25,11 +25,11 @@ namespace domain {
     struct Bus {
         bool is_roundtrip = false;
         size_t stops_count = 0;
-        size_t unique_stops_count = 0;
-        unsigned int real_distance = 0;
-        double length = 0;
-        std::string number;
-        geo::Coordinates last_stop;
-        std::deque<const Stop*> stops;
+        size_t unique_stops_count_ = 0;
+        unsigned int real_distance_ = 0;
+        double length_ = 0;
+        std::string number_;
+        geo::Coordinates last_stop_;
+        std::deque<const Stop*> stops_;
     };
 }

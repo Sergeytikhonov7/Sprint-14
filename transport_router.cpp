@@ -14,12 +14,12 @@ router::TransportRouter::TransportRouter(const RequestHandler& requestHandler, r
             double time_ = routingSettings_.bus_wait_time;
             unsigned int span_count_ = 0;
             for (size_t j = i + 1; j < bus.second->stops_count; ++j) {
-                time_ += requestHandler.GetDistance(bus.second->stops[j - 1]->name_, bus.second->stops[j]->name_) /
+                time_ += requestHandler.GetDistance(bus.second->stops_[j - 1]->name_, bus.second->stops_[j]->name_) /
                          routingSettings_.bus_velocity;
-                size_t id = graph_->AddEdge(graph::Edge<double>{stop_name_to_vertexId_[bus.second->stops[i]->name_],
-                                                                stop_name_to_vertexId_[bus.second->stops[j]->name_],
+                size_t id = graph_->AddEdge(graph::Edge<double>{stop_name_to_vertexId_[bus.second->stops_[i]->name_],
+                                                                stop_name_to_vertexId_[bus.second->stops_[j]->name_],
                                                                 time_});
-                activity_[id] = BusActivity{"Bus", bus.second->number, bus.second->stops[i]->name_,
+                activity_[id] = BusActivity{"Bus", bus.second->number_, bus.second->stops_[i]->name_,
                                             graph_.get()->GetEdge(id).weight,
                                             ++span_count_};
             }

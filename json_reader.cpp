@@ -87,22 +87,22 @@ void JsonReader::WriteStatistic(std::ostream& out, RequestHandler& requestHandle
 void JsonReader::ParseRoutes(RequestHandler& requestHandler, const json::Dict& dict) {
     domain::Bus bus;
     std::set<std::string> uniq_stops;
-    bus.number = std::move(dict.at("name").AsString());
+    bus.number_ = std::move(dict.at("name").AsString());
     bus.is_roundtrip = dict.at("is_roundtrip").AsBool();
-    for (const auto& stop : dict.at("stops").AsArray()) {
+    for (const auto& stop : dict.at("stops_").AsArray()) {
         uniq_stops.insert(stop.AsString());
         auto current_stop = requestHandler.GetStopByName(std::move(stop.AsString()));
         CalculateMinMaxCoord(requestHandler.GetMap(), current_stop);
-        bus.stops.push_back(current_stop);
+        bus.stops_.push_back(current_stop);
     }
-    if (!bus.stops.empty()) {
-        bus.last_stop = bus.stops.back()->coordinates_;
+    if (!bus.stops_.empty()) {
+        bus.last_stop_ = bus.stops_.back()->coordinates_;
     }
     if (!bus.is_roundtrip) {
-        bus.stops.insert(bus.stops.end(), std::next(bus.stops.rbegin()), bus.stops.rend());
+        bus.stops_.insert(bus.stops_.end(), std::next(bus.stops_.rbegin()), bus.stops_.rend());
     }
-    bus.stops_count = bus.stops.size();
-    bus.unique_stops_count = uniq_stops.size();
+    bus.stops_count = bus.stops_.size();
+    bus.unique_stops_count_ = uniq_stops.size();
     requestHandler.AddRouteToDatabase(bus);
 }
 
@@ -184,11 +184,11 @@ svg::Color JsonReader::GetCurrentColor(const json::Node& color) {
 
 
 json::Node JsonReader::PrintStatRoute(int id, const domain::Bus* route) {
-    return json::Builder{}.StartDict().Key("curvature").Value(route->real_distance / route->length)
+    return json::Builder{}.StartDict().Key("curvature").Value(route->real_distance_ / route->length_)
             .Key("request_id").Value(id)
-            .Key("route_length").Value(int(route->real_distance))
+            .Key("route_length").Value(int(route->real_distance_))
             .Key("stop_count").Value(int(route->stops_count))
-            .Key("unique_stop_count").Value(int(route->unique_stops_count)).EndDict().Build();
+            .Key("unique_stop_count").Value(int(route->unique_stops_count_)).EndDict().Build();
 }
 
 json::Node JsonReader::PrintErrorMessage(int id) {

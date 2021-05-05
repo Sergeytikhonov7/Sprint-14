@@ -34,7 +34,7 @@ namespace renderer {
     void MapRenderer::AddRouteToMap(const domain::Bus* pBus) {
         using namespace std::literals;
         svg::Polyline polyline;
-        for (const auto& stops : pBus->stops) {
+        for (const auto& stops : pBus->stops_) {
             polyline.AddPoint(CalculateCoord(stops->coordinates_));
         }
         size_t count_color = current_color_palette_;
@@ -43,12 +43,12 @@ namespace renderer {
                 svg::StrokeLineJoin::ROUND);
         render_.polyline_.emplace_back(std::make_shared<svg::Polyline>(polyline));
         svg::Text inscription;
-        inscription.SetPosition(CalculateCoord(pBus->stops.begin().operator*()->coordinates_)).
+        inscription.SetPosition(CalculateCoord(pBus->stops_.begin().operator*()->coordinates_)).
                 SetOffset(render_.bus_label_offset_).
                 SetFontSize(render_.bus_label_font_size_).
                 SetFontFamily("Verdana"s).
                 SetFontWeight("bold"s).
-                SetData(std::string(pBus->number));
+                SetData(std::string(pBus->number_));
         svg::Text substrate(inscription);
         substrate.SetFillColor(render_.underlayer_color_).
                 SetStrokeColor(render_.underlayer_color_).
@@ -59,12 +59,12 @@ namespace renderer {
         render_.text_polyline_.emplace_back(std::make_shared<svg::Text>(substrate));
         render_.text_polyline_.emplace_back(std::make_shared<svg::Text>(inscription));
         if (!pBus->is_roundtrip) {
-            if (CalculateCoord(pBus->stops.begin().operator*()->coordinates_).x != CalculateCoord(pBus->last_stop).x &&
-                CalculateCoord(pBus->stops.begin().operator*()->coordinates_).y != CalculateCoord(pBus->last_stop).y) {
+            if (CalculateCoord(pBus->stops_.begin().operator*()->coordinates_).x != CalculateCoord(pBus->last_stop_).x &&
+                CalculateCoord(pBus->stops_.begin().operator*()->coordinates_).y != CalculateCoord(pBus->last_stop_).y) {
                 svg::Text inscription2(inscription);
-                inscription2.SetPosition(CalculateCoord(pBus->last_stop));
+                inscription2.SetPosition(CalculateCoord(pBus->last_stop_));
                 svg::Text substrate2(substrate);
-                substrate2.SetPosition(CalculateCoord(pBus->last_stop));
+                substrate2.SetPosition(CalculateCoord(pBus->last_stop_));
                 render_.text_polyline_.emplace_back(std::make_shared<svg::Text>(substrate2));
                 render_.text_polyline_.emplace_back(std::make_shared<svg::Text>(inscription2));
             }

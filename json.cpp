@@ -132,7 +132,7 @@ namespace json {
             auto read_char = [&parsed_num, &input] {
                 parsed_num += static_cast<char>(input.get());
                 if (!input) {
-                    throw ParsingError("Failed to read number from stream"s);
+                    throw ParsingError("Failed to read number_ from stream"s);
                 }
             };
 
@@ -187,7 +187,7 @@ namespace json {
                 }
                 return std::stod(parsed_num);
             } catch (...) {
-                throw ParsingError("Failed to convert "s + parsed_num + " to number"s);
+                throw ParsingError("Failed to convert "s + parsed_num + " to number_"s);
             }
         }
 
